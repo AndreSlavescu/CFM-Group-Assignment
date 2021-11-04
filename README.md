@@ -5,7 +5,6 @@ CFM group assignment
 # Due date: November 26, 2021
 
 - Target either the riskiest or safest portfolio
-
   - Decided on targeting the safest portfolio
 
 - Read a .csv file containing a finite number of stock tickers
@@ -25,3 +24,16 @@ CFM group assignment
     - Have the following headings: Ticker, Price, Shares, Value, Weight
     - Show the total adds to $100 000 and weight is 100%
     - Second last output
+
+- Create final DataFrame "Stocks"
+    - Same index as "FinalPortfolio" but only has Ticker and Shares
+    - Must output DataFrame to a CSV file titled “Stocks_Group_18.csv” 
+
+- At the end of the assignment, provide a declaration of contribution from each team member
+
+# Notes on Code
+    - Code should be well commented
+    - Write and call functions when appropriate
+    - Avoid hardcoding
+    - Use loops where appropriate
+    - Why are the stocks picked those specific stocks?
