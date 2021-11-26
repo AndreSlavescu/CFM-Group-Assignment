@@ -1,0 +1,2258 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{CFM\_101\_Group\_18\_Assignment\_Notebook}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Imports and Setup}
+\PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k+kn}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}\PY{p}{,} \PY{n}{Latex}
+
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{yfinance} \PY{k}{as} \PY{n+nn}{yf}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{random}
+\PY{k+kn}{import} \PY{n+nn}{threading}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{group-assignment}{%
+\subsection{Group Assignment}\label{group-assignment}}
+
+\hypertarget{team-number-18}{%
+\subsubsection{Team Number: 18}\label{team-number-18}}
+
+\hypertarget{team-member-names-daniel-kim-kitty-cai-andre-slavescu}{%
+\subsubsection{Team Member Names: Daniel Kim, Kitty Cai, Andre
+Slavescu}\label{team-member-names-daniel-kim-kitty-cai-andre-slavescu}}
+
+\hypertarget{team-strategy-chosen-safe}{%
+\subsubsection{Team Strategy Chosen:
+Safe}\label{team-strategy-chosen-safe}}
+
+    \hypertarget{group-assignment}{%
+\subsection{Group Assignment:}\label{group-assignment}}
+
+In this assignment, we will be analyzing various factors and ultimately
+utilizing these factors to formulate a dynamic portfolio that is safe.
+In other words, we will be attempting to create a portfolio whose value
+stays as close to the initial investment value as possible.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Reading in the stocks from the CSV file}
+\PY{n}{stocks} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tickers.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{header} \PY{o}{=} \PY{k+kc}{None}\PY{p}{)}
+\PY{n}{stocks}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ticker}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{stocklist} \PY{o}{=} \PY{n}{stocks}\PY{o}{.}\PY{n}{ticker}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}Check if the ticker is a valid US listed stock}
+\PY{n}{US\PYZus{}Tickers} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{def} \PY{n+nf}{currency\PYZus{}checker}\PY{p}{(}\PY{n}{stockstr}\PY{p}{)}\PY{p}{:}
+    \PY{n}{stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{stockstr}\PY{p}{)}
+    \PY{k}{if} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{currency}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n}{stock}\PY{o}{.}\PY{n}{info}\PY{p}{)} \PY{o+ow}{and} \PY{p}{(}\PY{n}{stock}\PY{o}{.}\PY{n}{info}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{currency}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{USD}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o+ow}{and} \PY{p}{(}\PY{n}{stock}\PY{o}{.}\PY{n}{info}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{market}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{us\PYZus{}market}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{US\PYZus{}Tickers}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{stockstr}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Threading:}
+\PY{n}{threads} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{stocklist}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{stock} \PY{o}{=} \PY{n}{stocklist}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{t} \PY{o}{=} \PY{n}{threading}\PY{o}{.}\PY{n}{Thread}\PY{p}{(}\PY{n}{target} \PY{o}{=} \PY{n}{currency\PYZus{}checker}\PY{p}{,} \PY{n}{args} \PY{o}{=} \PY{p}{(}\PY{n}{stock}\PY{p}{,}\PY{p}{)}\PY{p}{)}
+    \PY{n}{threads}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{t}\PY{p}{)}
+    \PY{n}{t}\PY{o}{.}\PY{n}{start}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{thread} \PY{o+ow}{in} \PY{n}{threads}\PY{p}{:}
+    \PY{n}{thread}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Make sure calculations are only based on the time interval of of July 02, 2021 to October 22, 2021}
+\PY{n}{start\PYZus{}date} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2021\PYZhy{}07\PYZhy{}02}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{end\PYZus{}date} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2021\PYZhy{}10\PYZhy{}22}\PY{l+s+s1}{\PYZsq{}}
+
+\PY{c+c1}{\PYZsh{}Making a list of stocks that is the list of valid stocks according to the guidelines in the Document}
+\PY{n}{list\PYZus{}of\PYZus{}valid\PYZus{}stocks} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{threads} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{}Checks if the average daily volume of the stock is greater or equal to 10 000 shares}
+\PY{k}{def} \PY{n+nf}{volume\PYZus{}checker}\PY{p}{(}\PY{n}{stock\PYZus{}str}\PY{p}{)}\PY{p}{:}
+    \PY{n}{volume} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{stock\PYZus{}str}\PY{p}{)}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{close} \PY{o}{=} \PY{n}{end\PYZus{}date}\PY{p}{)}\PY{o}{.}\PY{n}{Volume}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+    \PY{k}{if} \PY{n}{volume} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{10000}\PY{p}{:}
+        \PY{n}{list\PYZus{}of\PYZus{}valid\PYZus{}stocks}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{stock\PYZus{}str}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}Checks for each stock in the stock list of US listed stocks}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{US\PYZus{}Tickers}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{stock} \PY{o}{=} \PY{n}{US\PYZus{}Tickers}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{t} \PY{o}{=} \PY{n}{threading}\PY{o}{.}\PY{n}{Thread}\PY{p}{(}\PY{n}{target} \PY{o}{=} \PY{n}{volume\PYZus{}checker}\PY{p}{,} \PY{n}{args} \PY{o}{=} \PY{p}{(}\PY{n}{stock}\PY{p}{,}\PY{p}{)}\PY{p}{)}
+    \PY{n}{threads}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{t}\PY{p}{)}
+    \PY{n}{t}\PY{o}{.}\PY{n}{start}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{thread} \PY{o+ow}{in} \PY{n}{threads}\PY{p}{:}
+    \PY{n}{thread}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Removes Duplicates}
+\PY{n}{list\PYZus{}of\PYZus{}valid\PYZus{}stocks} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{dict}\PY{o}{.}\PY{n}{fromkeys}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}valid\PYZus{}stocks}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{filtering-discussion}{%
+\subsection{Filtering Discussion:}\label{filtering-discussion}}
+
+Our portfolio's filtering process is based on the fact that we want to
+aim for a safe portfolio, which does not fluctuate too much. In previous
+assignments, we noticed that when there were more stocks in a portfolio,
+if one of the stocks rises or falls sharply, it does not move the
+portfolio as much. This is because the stock will only be a portion of
+the portfolio and if there are more stocks, an individual stock will
+make up an even smaller proportion of the portfolio. Since it is only a
+small proportion, when it fluctuates, it will not influence the entire
+portfolio. Thus, in order to prevent and divert the risk of an
+individual stock, we decided to diversify our portfolio by aiming for a
+portfolio of 20 stocks (the maximum allowed). However, this number of
+stocks that will be chosen will still depend on other factors because we
+will not invest in a highly risky stock even if the code does not end up
+producing 20 stocks and chooses another amount between 10-20. It is not
+worth it to invest in something risky which may negatively impact our
+chances of having a safe portfolio. Investing in as many stocks as
+possible allows the portfolio to be less susceptible to the risk of an
+individual stock. In addition, investing in many stocks gives higher
+chances of diversification. This could mean that our program will have
+higher chances of picking stocks from different industries (especially
+through the comparisons of correlations.)
+
+    \hypertarget{standard-deviation}{%
+\subsection{Standard Deviation:}\label{standard-deviation}}
+
+In order to create a portfolio that has low returns, one crucial factor
+to consider is the standard deviation of the stock. The formula for the
+standard deviation is given by: \begin{align*}
+\sigma_X=\sqrt{\frac{\sum(x_i-\overline{X})}{N}}
+\end{align*} In finance, standard deviation is a measure of the total
+risk associated with the expected return. Consequently, less risky
+stocks have lower standard deviation values compared to their riskier
+counterparts as the lower standard deviation value indicates that the
+security possesses a lower trading range and has fewer spikes in its
+prices. Since we are attempting to make a safe portfolio, we want to
+choose stocks that have low standard deviation values. By doing so, we
+are choosing stocks that have a lower trading range and makes the
+portfolio less susceptible to large-scale losses or gains. This follows
+the fundamental relationship in finance between risk and return. By
+minimizing our risk, we are decreasing the opportunity for our portfolio
+to undergo large changes in its value. Conversely, by adding in stocks
+that have low risk in their expected returns, our portfolio will be
+safer and will thereby have less fluctuations in the value of our
+portfolio.
+
+Consequently, in this section, we will be calculating the standard
+deviation of the returns of each of the stocks that are in the CSV file.
+Afterwards, we will be finding which stocks have the lowest standard
+deviation values, which indicates that they are the safest stocks. From
+these results, we will be assigning points to the stocks that have the
+lowest standard deviation values (with the stocks with the lowest
+standard deviation values earning the most points).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Return a dataframe with all of the valid stocks and their closing prices}
+\PY{n}{stock\PYZus{}closing} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{ticker} \PY{o+ow}{in} \PY{n}{list\PYZus{}of\PYZus{}valid\PYZus{}stocks}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{}Get the ticker}
+    \PY{n}{x} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{ticker}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{}Get ticker history}
+    \PY{n}{y} \PY{o}{=} \PY{n}{x}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{}Return the closing price of the ticker during the period of time}
+    \PY{n}{stock\PYZus{}closing}\PY{p}{[}\PY{n}{ticker}\PY{p}{]} \PY{o}{=} \PY{n}{y}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Close}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{stock\PYZus{}closing}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                   AMZN         GOOG        PYPL        ABBV    MON  \textbackslash{}
+Date
+2021-07-02  3510.979980  2574.379883  290.239990  112.535881  9.655
+2021-07-06  3675.739990  2595.419922  292.640015  113.083076  9.730
+2021-07-07  3696.580078  2601.550049  297.130005  114.079750  9.730
+2021-07-08  3731.409912  2583.540039  295.049988  113.688896  9.749
+2021-07-09  3719.340088  2591.489990  300.209991  113.913635  9.663
+{\ldots}                 {\ldots}          {\ldots}         {\ldots}         {\ldots}    {\ldots}
+2021-10-15  3409.020020  2833.500000  268.350006  109.330002  9.750
+2021-10-18  3446.739990  2859.209961  270.329987  107.430000  9.780
+2021-10-19  3444.149902  2876.439941  271.700012  107.449997  9.780
+2021-10-20  3415.060059  2848.300049  258.359985  108.410004  9.750
+2021-10-21  3435.010010  2855.610107  243.210007  108.760002  9.750
+
+                   SPG        CVS        BIIB         BK       CSCO  {\ldots}  \textbackslash{}
+Date                                                                 {\ldots}
+2021-07-02  128.185181  81.460457  348.720001  50.600254  53.540001  {\ldots}
+2021-07-06  126.217354  80.225159  344.890015  48.872108  52.980000  {\ldots}
+2021-07-07  124.387978  80.383278  355.329987  48.862232  53.259998  {\ldots}
+2021-07-08  123.695770  79.276459  369.049988  47.736462  53.259998  {\ldots}
+2021-07-09  128.244507  80.363518  358.160004  49.306610  53.740002  {\ldots}
+{\ldots}                {\ldots}        {\ldots}         {\ldots}        {\ldots}        {\ldots}  {\ldots}
+2021-10-15  140.220001  85.344101  281.190002  56.833038  55.250000  {\ldots}
+2021-10-18  144.529999  83.991959  269.730011  57.081612  55.189999  {\ldots}
+2021-10-19  142.839996  84.399590  268.130005  57.320240  55.740002  {\ldots}
+2021-10-20  144.960007  86.050003  266.570007  58.970745  56.200001  {\ldots}
+2021-10-21  143.960007  86.860001  270.209991  59.398285  55.689999  {\ldots}
+
+                  COP        BMY          PG          BA         CL  \textbackslash{}
+Date
+2021-07-02  61.901985  66.408829  134.218750  236.679993  80.773155
+2021-07-06  59.465363  66.111259  134.297760  236.139999  81.040092
+2021-07-07  58.212528  66.597298  135.305145  231.779999  81.722275
+2021-07-08  58.409828  66.150940  135.285385  236.770004  81.405899
+2021-07-09  59.317394  66.617142  135.334778  239.589996  81.494873
+{\ldots}               {\ldots}        {\ldots}         {\ldots}         {\ldots}        {\ldots}
+2021-10-15  73.697258  58.360001  143.530426  217.039993  75.791153
+2021-10-18  74.055107  56.939999  141.463242  216.979996  74.826988
+2021-10-19  74.870216  57.590000  139.793594  215.970001  74.330002
+2021-10-20  75.566032  58.070000  140.340210  216.169998  75.099998
+2021-10-21  74.144569  57.810001  139.330002  214.339996  74.889999
+
+                   LLY         TXN         PEP        NEE        OXY
+Date
+2021-07-02  232.452255  191.143967  148.910004  73.615639  32.566921
+2021-07-06  233.902832  190.139557  149.130005  74.458031  30.497753
+2021-07-07  234.300247  188.727432  149.789993  74.656250  29.468164
+2021-07-08  235.591858  187.195984  149.860001  74.458031  29.648092
+2021-07-09  233.475616  189.214722  149.479996  74.319290  30.227859
+{\ldots}                {\ldots}         {\ldots}         {\ldots}        {\ldots}        {\ldots}
+2021-10-15  237.110107  194.449997  158.809998  81.309868  31.660000
+2021-10-18  238.206543  194.910004  158.089996  80.632866  32.930000
+2021-10-19  241.525772  198.229996  160.100006  81.668282  32.939999
+2021-10-20  242.931213  199.380005  161.309998  83.549950  33.360001
+2021-10-21  240.389465  201.289993  159.179993  83.440430  32.799999
+
+[78 rows x 55 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Getting the Daily Returns of each stock that is a valid stock.}
+\PY{n}{returns} \PY{o}{=} \PY{l+m+mi}{100} \PY{o}{*} \PY{n}{stock\PYZus{}closing}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{D}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{first}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}
+\PY{n}{returns} \PY{o}{=} \PY{n}{returns}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+\PY{n}{returns}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{all}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{inplace} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Calculate the standard deviation and making a dataframe of the standard deviations of each of the stocks.}
+\PY{n}{std} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{returns}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Standard Deviation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{std}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{n}{inplace} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Sorting in increasing order of the standard deviations}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Standard Deviation}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{std}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  Standard Deviation
+0    MON            0.348784
+1     PG            0.609159
+2     KO            0.631825
+3     SO            0.654017
+4    PEP            0.655771
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{create-a-weighted-portfolio}{%
+\subsection{Create a Weighted
+Portfolio}\label{create-a-weighted-portfolio}}
+
+We decided to use a point system to create our portfolio. Our portfolio
+is dependent on 4 factors: standard deviation, expected returns, beta,
+and correlation.
+
+First we calculated the standard deviation of all of the valid stocks
+and ordered them from smallest standard deviation to largest. Then we
+give the smallest standard deviation the most points, 20 points. This is
+because we are aiming for a portfolio with 20 stocks. From there, each
+following ticker will receive one less point and after the first twenty
+stocks, all other tickers will not receive any points.
+
+Similarly, this was done for the expected returns and betas. The
+expected returns were listed from smallest to largest because we our
+hoping our portfolio will have nearly \$0 of return after the period.
+The lowest expected returns received 20 points and so on.
+
+This point system was concluded after a long discussion, however we did
+not want to completely weigh our portfolio depending on the point
+system. Since each stock must make up a minimum of (100/(2n))\%, where n
+is the number of stocks we choose for our stocks. We calculate how much
+each stock should minimally weigh and then calculate a second percentage
+of how much more we should make each stock weigh. This is done so to
+prevent an individual stock from weighing too much and skewing the data.
+
+The fourth factor we considered is correlation however this was done
+differently from the other three factors. Correlation was calculated by
+comparing a stock to the rest of the portfolio generated without the
+stock. If the correlation is below 0.5, then the stock receives 10
+points. This is because it is nearly impossible for the correlation to
+be negative for a stock in comparison to the generated portfolio and we
+realized that 0.5 is a very valid low correlation in comparison.
+
+Note: \textbf{Addresses the 35\% maximum limitation}
+
+After lots of calculation, we concluded that it is impossible for a
+stock to weigh more than 35\% so that was not a limitation we put into
+our code. This is because for each of the three indicators, 210 points
+are given out.
+
+(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 +
+17 + 18 + 19 + 20) = (20 + 1) * 10 = 21 * 10 = 210
+
+Say there is a stock which gets the maximum of 20 points every time and
+it also receives the 10 points from correlation. It would have a total
+of (20 + 20 + 20 + 10 = 40 + 30 = 70) 70 points. Overall, there should
+be a sum of approximately 210 * 3 = 630 points although there may be
+more or less in the portfolio depending on how many points each stock
+gets and if there are more occurrences of correlation or less. 70/630 =
+1/9 = 0.1111111, this is approximately 11.111\%. After adding the base
+weighting, there is no way it would ever be above 35\% - not even close.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Address points for standard deviation}
+\PY{c+c1}{\PYZsh{}Loop through all indices in the condensed list and produce a point score for each stock}
+\PY{c+c1}{\PYZsh{}A stock recieves more points for having a low standard deviation because this indicates that it did not fluctuate as much}
+\PY{c+c1}{\PYZsh{}The goal of the portfolio is to be safe and have a return close to \PYZdl{}0 as possible so stocks with low standard deviation will recieve more points}
+\PY{n}{std\PYZus{}points} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range} \PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{std}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{i} \PY{o}{\PYZlt{}} \PY{l+m+mi}{20}\PY{p}{:}  
+        \PY{n}{std\PYZus{}points}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{\PYZhy{}}\PY{n}{i}\PY{p}{)}              
+    \PY{k}{else}\PY{p}{:}
+        \PY{n}{std\PYZus{}points}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}print(std\PYZus{}points)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialize points column for standard deviation}
+\PY{n}{std}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{std\PYZus{}points}
+\PY{n}{std}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  Standard Deviation  PointsS
+0    MON            0.348784       20
+1     PG            0.609159       19
+2     KO            0.631825       18
+3     SO            0.654017       17
+4    PEP            0.655771       16
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{standard-deviation-discussion}{%
+\subsection{Standard Deviation
+Discussion:}\label{standard-deviation-discussion}}
+
+In our final dataframe named std, we have arranged the stocks in a
+manner such that the stock with lowest standard deviation values, hence
+the least riskiest stock, is first and it increases in ascending order
+of standard deviation values. The first in our dataframe earned the most
+points as it is the safest and we would like to take this into
+consideration later on when we determine the weighting of the different
+stocks in our portfolio.
+
+To further solidfy the idea that stocks with lower standard deviations
+have smaller fluctuations in their returns and are thereby safer, we
+will plot a graph of the daily returns of the stock with the lowest
+standard deviation value and the stock with the highest standard
+deviation value and compare the graphs with one another and observe
+important observations.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Getting the two stocks:}
+\PY{n}{lowest\PYZus{}std\PYZus{}stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{std}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{highest\PYZus{}std\PYZus{}stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{std}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Getting their returns from the historical data}
+\PY{n}{lowest\PYZus{}std\PYZus{}stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{std}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{highest\PYZus{}std\PYZus{}stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{std}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{lowest\PYZus{}std\PYZus{}stock\PYZus{}hist\PYZus{}returns\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{l+m+mi}{100} \PY{o}{*} \PY{n}{lowest\PYZus{}std\PYZus{}stock}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date}\PY{p}{)}\PY{o}{.}\PY{n}{Close}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+\PY{n}{highest\PYZus{}std\PYZus{}stock\PYZus{}hist\PYZus{}returns\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{l+m+mi}{100} \PY{o}{*} \PY{n}{highest\PYZus{}std\PYZus{}stock}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date}\PY{p}{)}\PY{o}{.}\PY{n}{Close}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} For the subplot:}
+\PY{n}{fig}\PY{p}{,} \PY{p}{(}\PY{p}{(}\PY{n}{ax1}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{ax2}\PY{p}{)}\PY{p}{)} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{fig}\PY{o}{.}\PY{n}{set\PYZus{}size\PYZus{}inches}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Overall title}
+\PY{n}{fig}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Comparison between Lowest STD Stock and Highest STD Stock}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Subplot 1: The Price Weighted Index}
+\PY{n}{ax1}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{lowest\PYZus{}std\PYZus{}stock\PYZus{}hist\PYZus{}returns\PYZus{}df}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{lowest\PYZus{}std\PYZus{}stock\PYZus{}hist\PYZus{}returns\PYZus{}df}\PY{o}{.}\PY{n}{Close}\PY{p}{)}
+\PY{n}{ax1}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dates}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax1}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Daily Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax1}\PY{o}{.}\PY{n}{title}\PY{o}{.}\PY{n}{set\PYZus{}text}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Lowest STD Stock Daily Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Subplot 2: The Market Weighted Index}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{highest\PYZus{}std\PYZus{}stock\PYZus{}hist\PYZus{}returns\PYZus{}df}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{highest\PYZus{}std\PYZus{}stock\PYZus{}hist\PYZus{}returns\PYZus{}df}\PY{o}{.}\PY{n}{Close}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dates}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Daily Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{title}\PY{o}{.}\PY{n}{set\PYZus{}text}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Highest STD Stock Daily Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{standard-deviation-discussion-contd}{%
+\subsection{Standard Deviation Discussion
+Cont'd:}\label{standard-deviation-discussion-contd}}
+
+As we can see from our two graphs, generally, the returns of the stock
+with the lower standard deviation have a smaller range and is generally
+much less volatile compared to its higher standard deviation
+counterpart. The stock with the highest standard deviation possesses
+much more spikes in its returns compared to the safer stock. From this
+graph, we can see that the stock with the lower STD can be seen as a
+safer stock as its returns fluctuate significantly less than that of a
+stock with a higher STD. Consequently, by assigning more points, and
+therefore greater weighting on stocks that have a lower standard
+deviation, we are effectively making our portfolio safer. In addition,
+notice that although the fluctuations seem wide, the changes of the
+daily returns for the safest stock only fluctuates between -2.0 and 2.0,
+whereas the returns of the stock with the highest standard deviation
+actually fluctuates with -8 and 8, this is a 4 time difference.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}latex}
+\PY{k}{\PYZbs{}newpage}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \newpage
+
+
+    
+    \hypertarget{expected-returns}{%
+\subsection{Expected Returns:}\label{expected-returns}}
+
+Another key factor to consider is the expected returns of each of the
+individual stocks. For our safe portfolio, we want the expected returns
+of our portfolio to be as close to 0 as possible. The expected returns
+of a portfolio can be calculated using the following formula:
+
+\begin{align*}
+E(X) Portfolio = (Security1_{Expected Return} \times Security1_{Weight}) + (Security2_{Expected Return} \times Security2_{Weight}) + ... + (Security n_{Expected Return} \times Security n_{Weight})
+\end{align*}
+
+Consequently, to have the lowest expected returns for the portfolio, we
+want the expected returns of each of the selected stocks to be as low as
+possible. Therefore, we will be attempting to find the expected returns
+of each of the stocks that are valid in our CSV file and then awarding
+points to the stocks that have the lowest expected returns are selected
+and have a higher weighting so that the expected return of our portfolio
+is as close to 0 as possible.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Get the expected returns}
+\PY{c+c1}{\PYZsh{}We will be taking the absolute value as we want to consider the stock with the smallest expected return in magnitude}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{l+m+mi}{100} \PY{o}{*} \PY{n}{returns}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Calculate the expected returns and plot it on dataframe}
+\PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{n}{inplace} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Expected Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Sorted in increasing order of expected returns of each of the stocks}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Expected Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  Expected Returns
+0   SBUX          0.046989
+1     GM          0.778134
+2    MON          0.942456
+3    LMT          1.049853
+4     KO          1.157634
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Address points for the percent expected returns}
+\PY{c+c1}{\PYZsh{}Loop through all indices in the condensed list and produce a point score for each stock}
+\PY{c+c1}{\PYZsh{}A stock recieves more points for having a low expected return because this indicates that the stock is not very volatile}
+\PY{c+c1}{\PYZsh{}The goal of the portfolio is to be safe and have a return close to \PYZdl{}0 as possible so stocks with low expected returns will recieve more points}
+\PY{n}{returns\PYZus{}points} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range} \PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{expected\PYZus{}returns}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{i} \PY{o}{\PYZlt{}} \PY{l+m+mi}{20}\PY{p}{:}
+        \PY{n}{returns\PYZus{}points}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{\PYZhy{}}\PY{n}{i}\PY{p}{)}             
+    \PY{k}{else}\PY{p}{:}
+        \PY{n}{returns\PYZus{}points}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Initialize points column for returns }
+\PY{n}{expected\PYZus{}returns}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{returns\PYZus{}points}
+\PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  Expected Returns  PointsR
+0   SBUX          0.046989       20
+1     GM          0.778134       19
+2    MON          0.942456       18
+3    LMT          1.049853       17
+4     KO          1.157634       16
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{expected-returns-discussion}{%
+\subsection{Expected Returns
+Discussion:}\label{expected-returns-discussion}}
+
+In our expected\_returns dataframe, we have arranged the stocks in a
+manner such that the stock with the lowest expected returns is placed
+first in our dataframe and then the rest are sorted in increasing order
+of expected returns.
+
+In order to showcase how the expected returns of a portfolio will
+change, we will graph the expected returns of a portfolio with the first
+5 stocks in our dataframe, otherwise the 5 stocks with the lowest
+expected returns, and we will also graph a portfolio with the last 5
+stocks in our dataframe, otherwise the 5 stocks with the highest
+expected returns. We will be calling on functions that get the closing
+prices and make equally weighted portfolios. Then, we will be getting
+the expected returns of both of the portfolios and comparing the two.
+
+\textbf{Note}: Please note that these generated portfolios are not
+entirely accurate nor ideal, as they will be made with each stock being
+weighted equally as an assumption. Consequently, these graphs are here
+to serve for general analysis to show the discrepancies between a
+portfolio that has stocks with high expected returns compared to a
+portfolio that has low expected returns. The assumed initial investment
+value will be \$100,000.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Getting the first 5 and the last 5 stocks from our dataframe into a list. }
+\PY{n}{low\PYZus{}er\PYZus{}stocks} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{5}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{high\PYZus{}er\PYZus{}stocks} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}A function that produces a dataframe that displays all of the closing prices in a list of stocks}
+\PY{k}{def} \PY{n+nf}{get\PYZus{}closing\PYZus{}prices}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{,} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end\PYZus{}date}\PY{p}{)}\PY{p}{:}
+    \PY{n}{stocks\PYZus{}close\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{)}\PY{p}{)}\PY{p}{:} 
+        \PY{n}{stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+        \PY{n}{stock\PYZus{}historical} \PY{o}{=} \PY{n}{stock}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start}\PY{o}{=} \PY{n}{start\PYZus{}date} \PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date} \PY{p}{,} \PY{n}{threads}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{stocks\PYZus{}close\PYZus{}df}\PY{p}{[}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{n}{stock\PYZus{}historical}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Close}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+        \PY{n}{stocks\PYZus{}close\PYZus{}daily} \PY{o}{=} \PY{n}{stocks\PYZus{}close\PYZus{}df}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{D}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o}{.}\PY{n}{first}\PY{p}{(}\PY{p}{)}
+        \PY{n}{stocks\PYZus{}close\PYZus{}daily} \PY{o}{=} \PY{n}{stocks\PYZus{}close\PYZus{}daily}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}
+    \PY{k}{return} \PY{n}{stocks\PYZus{}close\PYZus{}daily}
+\PY{c+c1}{\PYZsh{}For the low expected returns stocks:}
+\PY{n}{low\PYZus{}er\PYZus{}close} \PY{o}{=} \PY{n}{get\PYZus{}closing\PYZus{}prices}\PY{p}{(}\PY{n}{low\PYZus{}er\PYZus{}stocks}\PY{p}{,} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end\PYZus{}date}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}For the high expected returns stocks:}
+\PY{n}{high\PYZus{}er\PYZus{}close} \PY{o}{=} \PY{n}{get\PYZus{}closing\PYZus{}prices}\PY{p}{(}\PY{n}{high\PYZus{}er\PYZus{}stocks}\PY{p}{,} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end\PYZus{}date}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}  A function that consumes a list of stocks, and an initial investment size and a dataframe of closing prices of the list of stocks and produces a hypothetical portfolio where each stock is weighted the same. This hypothetical portfolio (which is not the final portfolio), will be used to calculate the correlation of each of the stocks to this hypothetical portfolio to see whether or not the stock in question has a low correlation with the rest of the stocks in the portfolio. }
+\PY{k}{def} \PY{n+nf}{get\PYZus{}data}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{,}\PY{n}{initial\PYZus{}investement}\PY{p}{,} \PY{n}{stock\PYZus{}close}\PY{p}{)}\PY{p}{:}
+    \PY{n}{number\PYZus{}of\PYZus{}stocks} \PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{n}{dataframe} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} Here we are calculating the number of stocks that we will buy initially and their values. }
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{number\PYZus{}of\PYZus{}stocks} \PY{o}{=} \PY{p}{(}\PY{n}{initial\PYZus{}investement}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{stock\PYZus{}close}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{i}\PY{p}{]}
+        \PY{n}{dataframe}\PY{p}{[}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{stock\PYZus{}close}\PY{p}{[}\PY{n}{list\PYZus{}of\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]} \PY{o}{*} \PY{n}{number\PYZus{}of\PYZus{}stocks}
+
+    \PY{n}{returns} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{index} \PY{o}{=} \PY{n}{stock\PYZus{}close}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+    \PY{n}{returns} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{p}{[}\PY{n}{returns}\PY{p}{,} \PY{n}{dataframe}\PY{p}{]}\PY{p}{,} \PY{n}{join} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{outer}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} We are now summing all of the values of each stock to find the value of the total portfolio}
+    \PY{n}{returns}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Portfolio Value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{=} \PY{n}{returns}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} To find the returns, we are finding the \PYZpc{} change of the portfolio value. }
+    \PY{n}{returns}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100} \PY{o}{*} \PY{n}{returns}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Portfolio Value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}
+    \PY{k}{return} \PY{n}{returns}
+
+\PY{c+c1}{\PYZsh{} For the low expected returns portfolio:}
+\PY{n}{low\PYZus{}er\PYZus{}portfolio} \PY{o}{=} \PY{n}{get\PYZus{}data}\PY{p}{(}\PY{n}{low\PYZus{}er\PYZus{}stocks}\PY{p}{,} \PY{l+m+mi}{100000}\PY{p}{,} \PY{n}{low\PYZus{}er\PYZus{}close}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} For the high expected returns portfolio:}
+\PY{n}{high\PYZus{}er\PYZus{}portfolio} \PY{o}{=} \PY{n}{get\PYZus{}data}\PY{p}{(}\PY{n}{high\PYZus{}er\PYZus{}stocks}\PY{p}{,} \PY{l+m+mi}{100000}\PY{p}{,} \PY{n}{high\PYZus{}er\PYZus{}close}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Making one dataframe to compare the two:}
+\PY{n}{comparison} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+\PY{n}{comparison}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Low ER Portfolio Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{low\PYZus{}er\PYZus{}portfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{comparison}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{High ER Portfolio Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{high\PYZus{}er\PYZus{}portfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} Printing the expected returns:}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Expected Returns:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{comparison}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Expected Returns:
+Low ER Portfolio Returns     0.000153
+High ER Portfolio Returns    0.139980
+dtype: float64
+    \end{Verbatim}
+
+    \hypertarget{expected-returns-discussion-contd}{%
+\subsection{Expected Returns Discussion
+Cont'd:}\label{expected-returns-discussion-contd}}
+
+As we can see from our above code and calculations, the expected returns
+of the portfolio that has the stocks with high expected returns, is
+significantly higher than the expected returns of the portfolio that is
+composed of stocks with low expected returns. Consequently, from this
+result and this generalized example, we can see that choosing stocks
+with low expected returns will also result in the expected returns of
+the portfolio to be lower compared to that of choosing stocks that have
+high expected returns. Ultimately, this demonstrates why stocks with
+lower expected returns were given more points as we want the stocks with
+lower expected returns to be weighted higher so that the expected
+returns of our final portfolio are lower.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}latex}
+\PY{k}{\PYZbs{}newpage}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \newpage
+
+
+    
+    \hypertarget{beta}{%
+\subsection{Beta:}\label{beta}}
+
+Since we are attempting to build a safe portfolio, and thus minimize
+risk, we can use another measure of risk known as beta to further
+reaffirm that we are choosing the least risky stocks. Beta is a measure
+of the risk of a single stock relative to the entire market. The higher
+the beta value, the riskier the stock. Beta will tell us how the stock
+is moving relative to the movement of the market. For instance, if a
+stock has a beta of 1.5, then this means that the returns of this stock
+are 1.5 times more volatile than the returns of the market.
+Consequently, if we are able to find stocks that have beta values that
+are close to 0, this means that the stock would have low expected
+returns and would also indicate that the stock's movement is
+uncorrelated with the market. These stocks will then be extremely safe
+and the returns would not move with the market, thereby minimizing the
+returns that are expected.
+
+Consequently, we will be attempting to find stocks with a beta value
+close to 0.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Getting a list of all of the stocks}
+\PY{n}{list\PYZus{}of\PYZus{}all\PYZus{}stocks} \PY{o}{=} \PY{n}{returns}\PY{o}{.}\PY{n}{columns}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Making a dataframe of the market index}
+\PY{n}{market\PYZus{}index} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} \PYZsq{}\PYZca{}GSPC is the ticker of the S\PYZam{}P 500, this will be used as a general market index in this assignment}
+\PY{n}{MarketIndex} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZca{}GSPC}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{MarketIndex\PYZus{}hist} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{MarketIndex}\PY{p}{)}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start}\PY{o}{=}\PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end}\PY{o}{=}\PY{n}{end\PYZus{}date}\PY{p}{)}
+\PY{n}{market\PYZus{}index}\PY{p}{[}\PY{n}{MarketIndex}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100} \PY{o}{*} \PY{n}{MarketIndex\PYZus{}hist}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Close}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{D}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{ffill}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}
+\PY{n}{market\PYZus{}index} \PY{o}{=} \PY{n}{market\PYZus{}index}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} Calculating the variance of the market}
+\PY{n}{MarketVar}\PY{o}{=} \PY{n}{market\PYZus{}index}\PY{p}{[}\PY{n}{MarketIndex}\PY{p}{]}\PY{o}{.}\PY{n}{var}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Creating a dataframe with all of the Betas of each of the stock relative to the market}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}all\PYZus{}stocks}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{stock\PYZus{}hist} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{list\PYZus{}of\PYZus{}all\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start}\PY{o}{=}\PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end}\PY{o}{=}\PY{n}{end\PYZus{}date}\PY{p}{)}
+    \PY{n}{stock\PYZus{}returns} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+    \PY{n}{stock\PYZus{}returns}\PY{p}{[}\PY{n}{list\PYZus{}of\PYZus{}all\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100} \PY{o}{*} \PY{n}{stock\PYZus{}hist}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Close}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{D}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{ffill}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}
+    \PY{n}{stock\PYZus{}returns} \PY{o}{=} \PY{n}{stock\PYZus{}returns}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+    \PY{n}{stock\PYZus{}returnsb} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{p}{[}\PY{n}{stock\PYZus{}returns}\PY{p}{,} \PY{n}{market\PYZus{}index}\PY{p}{]}\PY{p}{,} \PY{n}{join}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} Calculating Beta}
+    \PY{c+c1}{\PYZsh{} Note that we will be taking the absolute value of the beta values. Although beta can technically be negative, we are attempting to find the stocks that have a beta value that is closest to 0 and so taking the absolute value of the beta value will allows to find these stocks that have a beta value closest to 0. }
+    \PY{n}{Beta}\PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{stock\PYZus{}returnsb}\PY{o}{.}\PY{n}{cov}\PY{p}{(}\PY{p}{)}\PY{o}{/}\PY{n}{MarketVar}\PY{p}{)}
+    \PY{n}{df}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{list\PYZus{}of\PYZus{}all\PYZus{}stocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{n}{Beta}\PY{o}{.}\PY{n}{iat}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+
+\PY{n}{df}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      AMZN      GOOG      PYPL      ABBV       MON       SPG       CVS  \textbackslash{}
+0  1.04111  1.288522  1.301842  0.679155  0.027794  1.532603  0.764027
+
+       BIIB        BK      CSCO  {\ldots}       COP       BMY        PG        BA  \textbackslash{}
+0  0.375193  1.407053  0.903568  {\ldots}  1.194662  0.614572  0.275025  1.398744
+
+         CL       LLY       TXN       PEP       NEE      OXY
+0  0.345618  0.598784  1.039351  0.366149  0.415869  2.02342
+
+[1 rows x 55 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} calculate beta value for each stock in the condensed list}
+\PY{n}{beta} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{T}
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Beta}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{beta}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{n}{inplace} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Sorting all of them in increasing order of Beta Values}
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Beta}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{beta}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks      Beta
+0    MON  0.027794
+1     PG  0.275025
+2     SO  0.297969
+3     CL  0.345618
+4    PEP  0.366149
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Assign points for each stock\PYZsq{}s beta value}
+\PY{c+c1}{\PYZsh{}Loop through all indices in the condensed list and produce a point score for each stock}
+\PY{c+c1}{\PYZsh{}A stock recieves more points for having a beta close to zero is less risky and offers low returns}
+\PY{c+c1}{\PYZsh{}The goal of the portfolio is to be safe and have a return close to \PYZdl{}0 as possible so stocks with low betas will recieve more points}
+\PY{n}{beta\PYZus{}points} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range} \PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{beta}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{i} \PY{o}{\PYZlt{}} \PY{l+m+mi}{20}\PY{p}{:}
+        \PY{n}{beta\PYZus{}points}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{\PYZhy{}}\PY{n}{i}\PY{p}{)}              
+    \PY{k}{else}\PY{p}{:}
+        \PY{n}{beta\PYZus{}points}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}returns\PYZus{}points}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialize a points column for beta values}
+\PY{n}{beta}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsB}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{beta\PYZus{}points}
+\PY{n}{beta}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks      Beta  PointsB
+0    MON  0.027794       20
+1     PG  0.275025       19
+2     SO  0.297969       18
+3     CL  0.345618       17
+4    PEP  0.366149       16
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{beta-discussion}{%
+\subsection{Beta Discussion:}\label{beta-discussion}}
+
+Using the code above, we were able to find the beta of each individual
+stock and award points to the stocks that have the lowest beta values.
+Similar to our analysis for the standard deviation, we can compare the
+returns between the stock with the lowest beta value and the stock with
+the highest beta value as well as the returns of the market to showcase
+how the stock with the lowest beta will also yield the lowest expected
+returns and why we chose stocks with low beta values.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Getting the two stocks:}
+\PY{n}{lowest\PYZus{}beta\PYZus{}stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{beta}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{highest\PYZus{}beta\PYZus{}stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n+nb}{str}\PY{p}{(}\PY{n}{beta}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Getting their returns from the historical data}
+\PY{n}{lowest\PYZus{}beta\PYZus{}stock\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{l+m+mi}{100} \PY{o}{*} \PY{n}{lowest\PYZus{}beta\PYZus{}stock}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date}\PY{p}{)}\PY{o}{.}\PY{n}{Close}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+\PY{n}{highest\PYZus{}beta\PYZus{}stock\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{l+m+mi}{100} \PY{o}{*} \PY{n}{highest\PYZus{}beta\PYZus{}stock}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date}\PY{p}{)}\PY{o}{.}\PY{n}{Close}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+\PY{n}{highest\PYZus{}beta\PYZus{}stock\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Highest Beta Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{highest\PYZus{}beta\PYZus{}stock\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Close}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{highest\PYZus{}beta\PYZus{}stock\PYZus{}df} \PY{o}{=} \PY{n}{highest\PYZus{}beta\PYZus{}stock\PYZus{}df}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Close}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{combined\PYZus{}beta\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{p}{[}\PY{n}{lowest\PYZus{}beta\PYZus{}stock\PYZus{}df}\PY{p}{,} \PY{n}{highest\PYZus{}beta\PYZus{}stock\PYZus{}df}\PY{p}{,} \PY{n}{market\PYZus{}index}\PY{p}{]}\PY{p}{,} \PY{n}{join} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{inner}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Plot line for lowest\PYZus{}beta\PYZus{}stock}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{combined\PYZus{}beta\PYZus{}df}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{combined\PYZus{}beta\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Close}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Lowest Beta Stock}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ls}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Plot line for highest\PYZus{}beta\PYZus{}stock}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{combined\PYZus{}beta\PYZus{}df}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{combined\PYZus{}beta\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Highest Beta Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Highest Beta Stock}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{marker} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}  \PY{n}{ls}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Plot line for market}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{combined\PYZus{}beta\PYZus{}df}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{combined\PYZus{}beta\PYZus{}df}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZca{}GSPC}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{p}{,}\PY{n}{label} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Market}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{marker} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}  \PY{n}{ls}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{} Title }
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Returns of lowest beta, highest beta and market}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Add axes labels}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Dates}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{rotation}\PY{o}{=} \PY{l+m+mi}{60}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Returns}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{beta-discussion-contd}{%
+\subsection{Beta Discussion Cont'd:}\label{beta-discussion-contd}}
+
+From the graph, we can see that, generally, the returns of the stock
+with the highest beta had more volatile returns than that of the lower
+beta stock. While this is not always the case, this is generally true
+which is further backed by the beta calculations we did in the code.
+Since the returns of lower beta stocks have, generally (not always as
+there are instances when this is not true), lower volatility than their
+higher beta stocks, then this indicates that lower beta stocks are a
+better fit for our safe portfolio. While low beta stocks can still be
+risky, they are simply less volatile which justifies our allocation of
+points for this factor.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{\PYZpc{}\PYZpc{}latex}
+\PY{k}{\PYZbs{}newpage}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \newpage
+
+
+    
+    \hypertarget{sorting-the-stocks-by-their-points}{%
+\subsection{Sorting the Stocks by their
+Points:}\label{sorting-the-stocks-by-their-points}}
+
+In this section, we will be compiling all of the stocks into one large
+dataframe in order of their points. In each section, we will be sorting
+the stocks in alphabetical order so that each of the separate dataframes
+can then be merged together. Then, we shall combine all of the different
+stocks and their associated point values for each of the factors listed
+above and then all of the points of each factor for each stock will be
+summed together to find the total points that each stock earned.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Sort stocks in order alphabetical order in preparations to add the points together}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stocks}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{std} \PY{o}{=} \PY{n}{std}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{std}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  Standard Deviation  PointsS
+0   AAPL            1.053117        0
+1   ABBV            1.036335        0
+2    ABT            0.817759       11
+3    ACN            0.828390       10
+4    AIG            1.525788        0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Sort stocks in order alphabetical order in preparations to add the points together}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stocks}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{expected\PYZus{}returns} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{expected\PYZus{}returns}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  Expected Returns  PointsR
+0   AAPL          6.480651        0
+1   ABBV          2.529781       10
+2    ABT          6.219498        0
+3    ACN         12.569653        0
+4    AIG         20.586843        0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Sort stocks in order alphabetical order in preparations to add the points together}
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stocks}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{beta} \PY{o}{=} \PY{n}{beta}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{beta}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks      Beta  PointsB
+0   AAPL  1.327051        0
+1   ABBV  0.679155        4
+2    ABT  0.468943       12
+3    ACN  1.031590        0
+4    AIG  1.460985        0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Initialize dataframe with all point scores}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} We will be adding columns to the dataframe with all of the points from each of the different sections. }
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stocks}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{beta}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stocks}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{std}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{expected\PYZus{}returns}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsB}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{beta}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsB}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} Summing the points to get the total points.}
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{TotalPoints}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsB}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{pointsystem}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  Stocks  PointsS  PointsR  PointsB  TotalPoints
+0   AAPL        0        0        0            0
+1   ABBV        0       10        4           14
+2    ABT       11        0       12           23
+3    ACN       10        0        0           10
+4    AIG        0        0        0            0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Sort all point columns in order from greatest to least value}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{TotalPoints}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{pointsystem}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Stocks  PointsS  PointsR  PointsB  TotalPoints
+0     MON       20       18       20           58
+1      PG       19        6       19           44
+2      KO       18       16       10           44
+3     LMT       14       17        9           40
+4      SO       17        0       18           35
+5     PEP       16        0       16           32
+6      CL       13        0       17           30
+7    SBUX        4       20        0           24
+8     ABT       11        0       12           23
+9      PM        2       13        6           21
+10    NEE        6        0       14           20
+11      T       15        0        5           20
+12    BMY       12        0        7           19
+13     GM        0       19        0           19
+14   AMZN        0       15        0           15
+15   BIIB        0        0       15           15
+16    MRK        0        1       13           14
+17   ABBV        0       10        4           14
+18      C        0       14        0           14
+19    NKE        0       12        0           12
+20    LLY        0        4        8           12
+21   COST        9        0        3           12
+22   CSCO        8        3        0           11
+23    PFE        0        0       11           11
+24    BLK        0       11        0           11
+25    ACN       10        0        0           10
+26    KMI        0        9        0            9
+27    TGT        1        7        0            8
+28     MO        0        8        0            8
+29   MSFT        7        0        0            7
+30    UNP        0        5        0            5
+31    CVS        5        0        0            5
+32    UPS        0        2        2            4
+33   GOOG        3        0        0            3
+34   ORCL        0        0        1            1
+35   QCOM        0        0        0            0
+36    TXN        0        0        0            0
+37    SPG        0        0        0            0
+38   PYPL        0        0        0            0
+39    SLB        0        0        0            0
+40    UNH        0        0        0            0
+41   AAPL        0        0        0            0
+42    OXY        0        0        0            0
+43     MS        0        0        0            0
+44    JPM        0        0        0            0
+45    COP        0        0        0            0
+46    COF        0        0        0            0
+47  CMCSA        0        0        0            0
+48    CAT        0        0        0            0
+49     BK        0        0        0            0
+50    BAC        0        0        0            0
+51     BA        0        0        0            0
+52    AXP        0        0        0            0
+53    AIG        0        0        0            0
+54    USB        0        0        0            0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{choosing-the-stocks-for-the-portfolio}{%
+\subsection{Choosing the stocks for the
+Portfolio:}\label{choosing-the-stocks-for-the-portfolio}}
+
+After finding the total points of each of the stocks in our list of
+stocks, we must then use the point system to choose the maximum number
+of stocks, up to a maximum number of 20, that we wish to make up our
+portfolio and then also use these points to determine the weight of each
+stock in our portfolio. Thus, we will choose the top 20 (or if there are
+less than 20 valid stocks then the number of valid of stocks) stocks
+that have the highest point totals and these will be the stocks that
+will make up our portfolio.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Only take the top 20 valid stocks to make a portfolio}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{20}\PY{p}{]} \PY{c+c1}{\PYZsh{} same as df.head(20)}
+\PY{c+c1}{\PYZsh{}Return the portfolio of 20 stocks}
+\PY{n}{pointsystem}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Stocks  PointsS  PointsR  PointsB  TotalPoints
+0     MON       20       18       20           58
+1      PG       19        6       19           44
+2      KO       18       16       10           44
+3     LMT       14       17        9           40
+4      SO       17        0       18           35
+5     PEP       16        0       16           32
+6      CL       13        0       17           30
+7    SBUX        4       20        0           24
+8     ABT       11        0       12           23
+9      PM        2       13        6           21
+10    NEE        6        0       14           20
+11      T       15        0        5           20
+12    BMY       12        0        7           19
+13     GM        0       19        0           19
+14   AMZN        0       15        0           15
+15   BIIB        0        0       15           15
+16    MRK        0        1       13           14
+17   ABBV        0       10        4           14
+18      C        0       14        0           14
+19    NKE        0       12        0           12
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Make list of stocks that will be in our portfolio.}
+\PY{n}{portfoliostocks} \PY{o}{=} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['MON', 'PG', 'KO', 'LMT', 'SO', 'PEP', 'CL', 'SBUX', 'ABT', 'PM', 'NEE', 'T',
+'BMY', 'GM', 'AMZN', 'BIIB', 'MRK', 'ABBV', 'C', 'NKE']
+    \end{Verbatim}
+
+    \hypertarget{correlation}{%
+\subsection{Correlation:}\label{correlation}}
+
+One final factor to be considered is the correlation of the stocks with
+the rest of the stocks in our portfolio. Correaltion is a measure of how
+securities move in relation to one another. Since we want our portfolio
+to be safe and have lower returns, one method to minimize the expected
+returns of the portfolio would be to place greater weighting on stocks
+that have a negative correlation with the rest of the portfolio. For
+instance, if a stock exhibits a negative correlation with a portfolio
+that contains the rest of the stocks, then this indicates that when the
+overall returns of the portfolio goes up, then the returns of that
+portfolio goes down. When the correlations between a stock and the
+portfolio of stocks is relatively low, then placing greater weighting on
+these stocks will minimize the risk of the overall portfolio. By
+increasing the weighting on stocks (by allocating points) that have a
+relatively low correlation with the portfolio of 20 stocks that we have
+chosen, then when the portfolio increases or decreases in value, then
+the low or negatively correlated stock will either move in the opposite
+direction of the portfolio or will only move slightly in the same
+direction with the rest of the portfolio.
+
+In this section, we will be calculating the correlation of each of the
+stocks with the portfolio that contains the stocks that we have chosen
+using the point system before. The reasoning behind why we are doing the
+correlation after choosing the stocks in our portfolio is because we are
+only interested in weighing the stocks that have a low correlation with
+the rest of the stocks we have chosen. Generally, in statistics, stocks
+that have a correlation value between 0.3-0.5 is considered to be a low
+correlation
+(https://www.researchgate.net/post/What-are-the-correlation-values-with-respect-to-low-moderate-high-correlation-specially-in-medical-research\#:\textasciitilde:text=Correlation\%20coefficients\%20whose\%20magnitude\%20are\%20between\%200.3\%20and\%200.5\%20indicate,if\%20any\%20(linear)\%20correlation.)
+. Consequently, for each stock in our portfolio that has a correlation
+value less than 0.5 with our portfolio will be assigned a flat number of
+10 points.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} This is the dataframe with all of the closing prices of our list of stocks}
+\PY{n}{closing\PYZus{}portfolio} \PY{o}{=} \PY{n}{get\PYZus{}closing\PYZus{}prices}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{,} \PY{n}{start\PYZus{}date}\PY{p}{,} \PY{n}{end\PYZus{}date}\PY{p}{)}
+\PY{n}{comparison\PYZus{}portfolio} \PY{o}{=} \PY{n}{get\PYZus{}data}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{,} \PY{l+m+mi}{100000}\PY{p}{,} \PY{n}{closing\PYZus{}portfolio}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+\PY{n}{comparison\PYZus{}portfolio} \PY{o}{=} \PY{n}{comparison\PYZus{}portfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Returns}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} Initializes the dataframe with the columns we want. }
+\PY{n}{correlations\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stock}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Correlation}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{PointsC}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{p}{]}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} This for loop will calculate the correlation of each stock with the portfolio that contains all of the stocks. If the correlation value of the stock is less than 0.5, then it will append it to the dataframe known as correlations\PYZus{}df. }
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{stocks\PYZus{}close\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+    \PY{n}{stock} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+    \PY{n}{stock\PYZus{}historical} \PY{o}{=} \PY{n}{stock}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start}\PY{o}{=} \PY{n}{start\PYZus{}date} \PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{end\PYZus{}date} \PY{p}{,} \PY{n}{threads}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+    \PY{n}{stocks\PYZus{}close\PYZus{}df}\PY{p}{[}\PY{n}{portfoliostocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{n}{stock\PYZus{}historical}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Close}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+    \PY{n}{stocks\PYZus{}close\PYZus{}returns} \PY{o}{=} \PY{n}{stocks\PYZus{}close\PYZus{}df}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{D}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o}{.}\PY{n}{first}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{pct\PYZus{}change}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+    \PY{n}{portfolio} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{p}{[}\PY{n}{comparison\PYZus{}portfolio}\PY{p}{,} \PY{n}{stocks\PYZus{}close\PYZus{}returns}\PY{p}{]}\PY{p}{,} \PY{n}{join} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{outer}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{correlation} \PY{o}{=} \PY{n}{portfolio}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{iat}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{stock\PYZus{}name} \PY{o}{=} \PY{n}{portfoliostocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{k}{if} \PY{n}{correlation} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.5}\PY{p}{:}
+        
+        \PY{n}{stock\PYZus{}data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stock}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{n}{stock\PYZus{}name}\PY{p}{]}\PY{p}{,}
+                                   \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Correlation}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{n}{correlation}\PY{p}{]}\PY{p}{,}
+                                   \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsC}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{l+m+mi}{10}\PY{p}{]}\PY{p}{\PYZcb{}}\PY{p}{)}
+        \PY{n}{correlations\PYZus{}df} \PY{o}{=} \PY{n}{correlations\PYZus{}df}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{stock\PYZus{}data}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n}{stock\PYZus{}data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Stock}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{n}{stock\PYZus{}name}\PY{p}{]}\PY{p}{,}
+                                   \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Correlation}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{n}{correlation}\PY{p}{]}\PY{p}{,}
+                                   \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsC}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{\PYZcb{}}\PY{p}{)}
+        \PY{n}{correlations\PYZus{}df} \PY{o}{=} \PY{n}{correlations\PYZus{}df}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{stock\PYZus{}data}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Resetting the index after appending}
+\PY{n}{correlations\PYZus{}df} \PY{o}{=} \PY{n}{correlations\PYZus{}df}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Creating a new dataframe that simply drops an invalid column}
+\PY{n}{correlations\PYZus{}final} \PY{o}{=} \PY{n}{correlations\PYZus{}df}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{index}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{correlations\PYZus{}final} \PY{o}{=} \PY{n}{correlations\PYZus{}final}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stock}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{ascending} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{correlations\PYZus{}final} \PY{o}{=} \PY{n}{correlations\PYZus{}final}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{correlations\PYZus{}final}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Stock  Correlation  PointsC
+0   ABBV     0.559104      0.0
+1    ABT     0.516033      0.0
+2   AMZN     0.396055     10.0
+3   BIIB     0.333315     10.0
+4    BMY     0.627438      0.0
+5      C     0.476367     10.0
+6     CL     0.597126      0.0
+7     GM     0.400098     10.0
+8     KO     0.726626      0.0
+9    LMT     0.484656     10.0
+10   MON     0.048036     10.0
+11   MRK     0.466871     10.0
+12   NEE     0.467286     10.0
+13   NKE     0.436680     10.0
+14   PEP     0.572720      0.0
+15    PG     0.471793     10.0
+16    PM     0.557185      0.0
+17  SBUX     0.515024      0.0
+18    SO     0.555761      0.0
+19     T     0.642847      0.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{correlation-discussion}{%
+\subsection{Correlation Discussion:}\label{correlation-discussion}}
+
+Using the code above, we were able to find all of the stocks in our
+portfolio that have a correlation value of less than 0.5 with our
+portfolio. We then awarded points to all of these stocks that have these
+lower correlation values so that when we use these points to weigh the
+stocks, the stocks that have a lower correlation value will have a
+greater weighting.
+
+    \hypertarget{recalculating-the-points-with-the-correlation-points-now-added}{%
+\subsection{Recalculating the Points with the Correlation Points now
+added}\label{recalculating-the-points-with-the-correlation-points-now-added}}
+
+    We will now be readding all of the points together.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} We can resort and and now add the correlation points by dropping the total points column, adding in the correlation points column and then readding in the total points columns after summing all of the points.}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} 
+                            \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+                            \PY{n}{ascending} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{TotalPoints}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Adding in the points}
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{PointsC}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{correlations\PYZus{}final}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{PointsC}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{TotalPoints}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsS}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsR}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{PointsB}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{PointsC}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalPoints}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}\PY{n}{ascending} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)}
+\PY{n}{pointsystem} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{pointsystem}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Stocks  PointsS  PointsR  PointsB  PointsC  TotalPoints
+0     MON       20       18       20     10.0         68.0
+1      PG       19        6       19     10.0         54.0
+2     LMT       14       17        9     10.0         50.0
+3      KO       18       16       10      0.0         44.0
+4      SO       17        0       18      0.0         35.0
+5     PEP       16        0       16      0.0         32.0
+6      CL       13        0       17      0.0         30.0
+7     NEE        6        0       14     10.0         30.0
+8      GM        0       19        0     10.0         29.0
+9    BIIB        0        0       15     10.0         25.0
+10   AMZN        0       15        0     10.0         25.0
+11      C        0       14        0     10.0         24.0
+12   SBUX        4       20        0      0.0         24.0
+13    MRK        0        1       13     10.0         24.0
+14    ABT       11        0       12      0.0         23.0
+15    NKE        0       12        0     10.0         22.0
+16     PM        2       13        6      0.0         21.0
+17      T       15        0        5      0.0         20.0
+18    BMY       12        0        7      0.0         19.0
+19   ABBV        0       10        4      0.0         14.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{calculating-the-weightings}{%
+\subsection{Calculating the
+Weightings}\label{calculating-the-weightings}}
+
+In order to calculate the weightings, we will first start by assigning
+the miniumum base weighting of each stock, which is 100/(2n), where n is
+the number of stocks in our portfolio. After assigning the minimum base
+weightings, we will then find the total sum of the total points. We will
+the find the \% of the points of each of the stocks and relative to the
+total sum of the total points. This will be our additional weightings
+and will be added onto the base weightings of each of the stocks. These
+will be the weighting of our stocks within our portfolio.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Calculate total points for weighting metrics}
+\PY{n}{total\PYZus{}points} \PY{o}{=} \PY{n}{pointsystem}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalPoints}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{total\PYZus{}points}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+613.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Initialize a dataframe for calculating weights}
+\PY{n}{base\PYZus{}weighting} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}Initialize all instances with the same weighting value (minimum 2.5\PYZpc{})}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{base\PYZus{}weighting}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{portfoliostocks}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{portfoliostocks}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{base\PYZus{}weighting} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{o}{.}\PY{n}{T}
+\PY{n}{base\PYZus{}weighting} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{stocks}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Weighting}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{base\PYZus{}weighting}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      Weighting
+MON         2.5
+PG          2.5
+KO          2.5
+LMT         2.5
+SO          2.5
+PEP         2.5
+CL          2.5
+SBUX        2.5
+ABT         2.5
+PM          2.5
+NEE         2.5
+T           2.5
+BMY         2.5
+GM          2.5
+AMZN        2.5
+BIIB        2.5
+MRK         2.5
+ABBV        2.5
+C           2.5
+NKE         2.5
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Target weight value vs. weight acheived }
+\PY{n}{total\PYZus{}weight} \PY{o}{=} \PY{l+m+mi}{100}
+\PY{n}{total\PYZus{}already\PYZus{}weighted} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Weighting}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{total\PYZus{}already\PYZus{}weighted}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+50.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Weight to be manipulated to achieve 100\PYZpc{} weighting }
+\PY{n}{manipulate\PYZus{}weight} \PY{o}{=} \PY{n}{total\PYZus{}weight} \PY{o}{\PYZhy{}} \PY{n}{total\PYZus{}already\PYZus{}weighted}
+\PY{n}{manipulate\PYZus{}weight}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+50.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Initialize list for remaining 50\PYZpc{} weightage}
+\PY{n}{further\PYZus{}weights} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range} \PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{pointsystem}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{}Points for the stock if it were out of 100}
+    \PY{n}{out\PYZus{}of\PYZus{}100} \PY{o}{=} \PY{n}{pointsystem}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}\PY{o}{/}\PY{n}{total\PYZus{}points} \PY{o}{*} \PY{l+m+mi}{100}
+    \PY{c+c1}{\PYZsh{} Stock weighting to be added per stock}
+    \PY{n}{point\PYZus{}total} \PY{o}{=} \PY{n}{out\PYZus{}of\PYZus{}100} \PY{o}{*} \PY{n}{manipulate\PYZus{}weight}\PY{o}{/}\PY{n}{total\PYZus{}weight}
+    \PY{n}{further\PYZus{}weights}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{point\PYZus{}total}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Remaining weight distribution:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+si}{\PYZob{}}\PY{n}{further\PYZus{}weights}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Remaining weight distribution:
+[5.5464926590538335, 4.404567699836868, 4.078303425774878, 3.588907014681892,
+2.8548123980424145, 2.6101141924959217, 2.4469820554649266, 2.4469820554649266,
+2.365415986949429, 2.039151712887439, 2.039151712887439, 1.957585644371941,
+1.957585644371941, 1.957585644371941, 1.8760195758564437, 1.794453507340946,
+1.7128874388254487, 1.631321370309951, 1.5497553017944536, 1.1419249592169658]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Initialize dataframe column with the remaining 50\PYZpc{} for the portfolio}
+\PY{n}{base\PYZus{}weighting}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MoreWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{further\PYZus{}weights}
+\PY{n}{base\PYZus{}weighting}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      Weighting  MoreWeight
+MON         2.5    5.546493
+PG          2.5    4.404568
+KO          2.5    4.078303
+LMT         2.5    3.588907
+SO          2.5    2.854812
+PEP         2.5    2.610114
+CL          2.5    2.446982
+SBUX        2.5    2.446982
+ABT         2.5    2.365416
+PM          2.5    2.039152
+NEE         2.5    2.039152
+T           2.5    1.957586
+BMY         2.5    1.957586
+GM          2.5    1.957586
+AMZN        2.5    1.876020
+BIIB        2.5    1.794454
+MRK         2.5    1.712887
+ABBV        2.5    1.631321
+C           2.5    1.549755
+NKE         2.5    1.141925
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Initialize dataframe column with total weightage}
+\PY{n}{base\PYZus{}weighting} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{base\PYZus{}weighting}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Weighting}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{+} \PY{n}{base\PYZus{}weighting}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MoreWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{base\PYZus{}weighting}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  index  Weighting  MoreWeight  TotalWeight
+0   MON        2.5    5.546493     8.046493
+1    PG        2.5    4.404568     6.904568
+2    KO        2.5    4.078303     6.578303
+3   LMT        2.5    3.588907     6.088907
+4    SO        2.5    2.854812     5.354812
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Check if the portfolio weight is correct}
+\PY{n}{portfolio\PYZus{}weight\PYZus{}check} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The total weighting of our portfolio is }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{portfolio\PYZus{}weight\PYZus{}check}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The total weighting of our portfolio is 99.99999999999999
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Use the datetime feature to get the current date}
+\PY{k+kn}{from} \PY{n+nn}{datetime} \PY{k+kn}{import} \PY{n}{date}
+\PY{k+kn}{import} \PY{n+nn}{datetime}
+
+\PY{n}{today} \PY{o}{=} \PY{n}{date}\PY{o}{.}\PY{n}{today}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Convert the date into a usable string for getting tickers}
+\PY{n}{now} \PY{o}{=} \PY{n}{today}\PY{o}{.}\PY{n}{strftime}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{20}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{y\PYZhy{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{m\PYZhy{}}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{now}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'2021-11-26'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{todaym} \PY{o}{=} \PY{n}{datetime}\PY{o}{.}\PY{n}{date}\PY{o}{.}\PY{n}{today}\PY{p}{(}\PY{p}{)}
+\PY{n}{week\PYZus{}ago} \PY{o}{=} \PY{n}{today} \PY{o}{\PYZhy{}} \PY{n}{datetime}\PY{o}{.}\PY{n}{timedelta}\PY{p}{(}\PY{n}{days} \PY{o}{=} \PY{l+m+mi}{7}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Get the date from a week ago}
+\PY{n}{previous} \PY{o}{=} \PY{n}{week\PYZus{}ago}\PY{o}{.}\PY{n}{strftime}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{20}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{y\PYZhy{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{m\PYZhy{}}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{previous}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'2021-11-19'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Generate a portfolio with the closing prices from a week before today to today, the reason this was done is so that if there is invalid data for}
+\PY{c+c1}{\PYZsh{}today or something does not display properly, the code will automatically take the last row of the dataframe}
+\PY{c+c1}{\PYZsh{}The last row of the dataframe will contain the most up to date closing prices}
+\PY{n}{portfolioclose} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{ticker} \PY{o+ow}{in} \PY{n}{portfoliostocks}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{yf}\PY{o}{.}\PY{n}{Ticker}\PY{p}{(}\PY{n}{ticker}\PY{p}{)}
+    
+    \PY{n}{y} \PY{o}{=} \PY{n}{x}\PY{o}{.}\PY{n}{history}\PY{p}{(}\PY{n}{start} \PY{o}{=} \PY{n}{week\PYZus{}ago}\PY{p}{,} \PY{n}{end} \PY{o}{=} \PY{n}{now}\PY{p}{)}
+    
+    \PY{n}{portfolioclose}\PY{p}{[}\PY{n}{ticker}\PY{p}{]} \PY{o}{=} \PY{n}{y}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Close}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{portfolioclose}\PY{o}{.}\PY{n}{tail}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             MON          PG         KO         LMT         SO         PEP  \textbackslash{}
+Date
+2021-11-19  9.76  146.820007  55.130001  341.440002  62.669998  163.809998
+2021-11-22  9.75  147.800003  55.470001  344.980011  63.119999  164.149994
+2021-11-23  9.81  149.440002  55.880001  345.179993  63.009998  165.250000
+2021-11-24  9.81  148.660004  55.430000  343.579987  63.099998  163.740005
+
+                   CL        SBUX         ABT         PM        NEE  \textbackslash{}
+Date
+2021-11-19  77.199997  110.779999  126.839996  90.400002  87.920593
+2021-11-22  77.559998  111.449997  125.260002  89.779999  86.974785
+2021-11-23  77.930000  113.580002  124.480003  89.650002  86.925003
+2021-11-24  77.760002  113.970001  125.070000  90.029999  87.209999
+
+                    T        BMY         GM         AMZN        BIIB  \textbackslash{}
+Date
+2021-11-19  24.129999  57.830002  61.799999  3676.570068  257.190002
+2021-11-22  24.700001  57.040001  64.059998  3572.570068  252.210007
+2021-11-23  24.760000  57.450001  63.049999  3580.040039  254.149994
+2021-11-24  24.469999  56.810001  62.189999  3580.409912  250.130005
+
+                  MRK        ABBV          C         NKE
+Date
+2021-11-19  80.699997  116.239998  66.339996  174.880005
+2021-11-22  81.639999  115.650002  67.040001  174.240005
+2021-11-23  82.800003  118.879997  68.070000  172.149994
+2021-11-24  82.279999  118.660004  67.279999  172.029999
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Get the last row of the dataframe}
+\PY{n}{buildclose} \PY{o}{=} \PY{n}{portfolioclose}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}
+
+\PY{n}{buildclose} \PY{o}{=} \PY{n}{buildclose}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{buildclose} \PY{o}{=} \PY{n}{buildclose}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}
+\PY{n}{buildclose} \PY{o}{=} \PY{n}{buildclose}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{buildclose}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  index           0
+0   MON    9.810000
+1    PG  148.660004
+2    KO   55.430000
+3   LMT  343.579987
+4    SO   63.099998
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Merge the total weight with the closing price, sorry about the closing price column having a column name of 0}
+\PY{n}{portfolioc} \PY{o}{=} \PY{n}{base\PYZus{}weighting}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{buildclose}\PY{p}{)}
+\PY{n}{portfolioc} \PY{o}{=} \PY{n}{portfolioc}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{index}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ticker}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weighting}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weighting}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MoreWeight}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MoreWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalWeight}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0} \PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ClosingPrice}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{portfolioc}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Ticker  Weighting  MoreWeight  TotalWeight  ClosingPrice
+0     MON        2.5    5.546493     8.046493      9.810000
+1      PG        2.5    4.404568     6.904568    148.660004
+2      KO        2.5    4.078303     6.578303     55.430000
+3     LMT        2.5    3.588907     6.088907    343.579987
+4      SO        2.5    2.854812     5.354812     63.099998
+5     PEP        2.5    2.610114     5.110114    163.740005
+6      CL        2.5    2.446982     4.946982     77.760002
+7    SBUX        2.5    2.446982     4.946982    113.970001
+8     ABT        2.5    2.365416     4.865416    125.070000
+9      PM        2.5    2.039152     4.539152     90.029999
+10    NEE        2.5    2.039152     4.539152     87.209999
+11      T        2.5    1.957586     4.457586     24.469999
+12    BMY        2.5    1.957586     4.457586     56.810001
+13     GM        2.5    1.957586     4.457586     62.189999
+14   AMZN        2.5    1.876020     4.376020   3580.409912
+15   BIIB        2.5    1.794454     4.294454    250.130005
+16    MRK        2.5    1.712887     4.212887     82.279999
+17   ABBV        2.5    1.631321     4.131321    118.660004
+18      C        2.5    1.549755     4.049755     67.279999
+19    NKE        2.5    1.141925     3.641925    172.029999
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Calculate how much money will be invested into each stock based on the weight}
+\PY{n}{portfoliomoney} \PY{o}{=} \PY{l+m+mi}{100000}
+\PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Invest}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfoliomoney} \PY{o}{*} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{TotalWeight}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{/}\PY{l+m+mi}{100}
+\PY{n}{portfolioc}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Ticker  Weighting  MoreWeight  TotalWeight  ClosingPrice       Invest
+0     MON        2.5    5.546493     8.046493      9.810000  8046.492659
+1      PG        2.5    4.404568     6.904568    148.660004  6904.567700
+2      KO        2.5    4.078303     6.578303     55.430000  6578.303426
+3     LMT        2.5    3.588907     6.088907    343.579987  6088.907015
+4      SO        2.5    2.854812     5.354812     63.099998  5354.812398
+5     PEP        2.5    2.610114     5.110114    163.740005  5110.114192
+6      CL        2.5    2.446982     4.946982     77.760002  4946.982055
+7    SBUX        2.5    2.446982     4.946982    113.970001  4946.982055
+8     ABT        2.5    2.365416     4.865416    125.070000  4865.415987
+9      PM        2.5    2.039152     4.539152     90.029999  4539.151713
+10    NEE        2.5    2.039152     4.539152     87.209999  4539.151713
+11      T        2.5    1.957586     4.457586     24.469999  4457.585644
+12    BMY        2.5    1.957586     4.457586     56.810001  4457.585644
+13     GM        2.5    1.957586     4.457586     62.189999  4457.585644
+14   AMZN        2.5    1.876020     4.376020   3580.409912  4376.019576
+15   BIIB        2.5    1.794454     4.294454    250.130005  4294.453507
+16    MRK        2.5    1.712887     4.212887     82.279999  4212.887439
+17   ABBV        2.5    1.631321     4.131321    118.660004  4131.321370
+18      C        2.5    1.549755     4.049755     67.279999  4049.755302
+19    NKE        2.5    1.141925     3.641925    172.029999  3641.924959
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Calculate how many shares can be bought based on the amount invested in each stock and the price of the stock}
+\PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Shares}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Invest}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{/}\PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ClosingPrice}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{portfolioc}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Ticker  Weighting  MoreWeight  TotalWeight  ClosingPrice       Invest  \textbackslash{}
+0     MON        2.5    5.546493     8.046493      9.810000  8046.492659
+1      PG        2.5    4.404568     6.904568    148.660004  6904.567700
+2      KO        2.5    4.078303     6.578303     55.430000  6578.303426
+3     LMT        2.5    3.588907     6.088907    343.579987  6088.907015
+4      SO        2.5    2.854812     5.354812     63.099998  5354.812398
+5     PEP        2.5    2.610114     5.110114    163.740005  5110.114192
+6      CL        2.5    2.446982     4.946982     77.760002  4946.982055
+7    SBUX        2.5    2.446982     4.946982    113.970001  4946.982055
+8     ABT        2.5    2.365416     4.865416    125.070000  4865.415987
+9      PM        2.5    2.039152     4.539152     90.029999  4539.151713
+10    NEE        2.5    2.039152     4.539152     87.209999  4539.151713
+11      T        2.5    1.957586     4.457586     24.469999  4457.585644
+12    BMY        2.5    1.957586     4.457586     56.810001  4457.585644
+13     GM        2.5    1.957586     4.457586     62.189999  4457.585644
+14   AMZN        2.5    1.876020     4.376020   3580.409912  4376.019576
+15   BIIB        2.5    1.794454     4.294454    250.130005  4294.453507
+16    MRK        2.5    1.712887     4.212887     82.279999  4212.887439
+17   ABBV        2.5    1.631321     4.131321    118.660004  4131.321370
+18      C        2.5    1.549755     4.049755     67.279999  4049.755302
+19    NKE        2.5    1.141925     3.641925    172.029999  3641.924959
+
+        Shares
+0   820.233671
+1    46.445362
+2   118.677673
+3    17.721949
+4    84.862322
+5    31.208709
+6    63.618595
+7    43.406002
+8    38.901543
+9    50.418214
+10   52.048524
+11  182.165336
+12   78.464804
+13   71.676889
+14    1.222212
+15   17.168886
+16   51.201841
+17   34.816461
+18   60.192559
+19   21.170290
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Create a final portfolio that begins with an index of 1 and it outputs all of the Tickers and Shares that will be bought}
+\PY{n}{FinalPortfolio} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+\PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ticker}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ticker}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{}finalportfolio}
+\PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Price}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ClosingPrice}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shares}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shares}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shares}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{*} \PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Price}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Weight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TotalWeight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{}finalportfolio}
+\PY{n}{FinalPortfolio}\PY{o}{.}\PY{n}{index} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{portfolioc}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{FinalPortfolio}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Ticker        Price      Shares        Value    Weight
+1     MON     9.810000  820.233671  8046.492659  8.046493
+2      PG   148.660004   46.445362  6904.567700  6.904568
+3      KO    55.430000  118.677673  6578.303426  6.578303
+4     LMT   343.579987   17.721949  6088.907015  6.088907
+5      SO    63.099998   84.862322  5354.812398  5.354812
+6     PEP   163.740005   31.208709  5110.114192  5.110114
+7      CL    77.760002   63.618595  4946.982055  4.946982
+8    SBUX   113.970001   43.406002  4946.982055  4.946982
+9     ABT   125.070000   38.901543  4865.415987  4.865416
+10     PM    90.029999   50.418214  4539.151713  4.539152
+11    NEE    87.209999   52.048524  4539.151713  4.539152
+12      T    24.469999  182.165336  4457.585644  4.457586
+13    BMY    56.810001   78.464804  4457.585644  4.457586
+14     GM    62.189999   71.676889  4457.585644  4.457586
+15   AMZN  3580.409912    1.222212  4376.019576  4.376020
+16   BIIB   250.130005   17.168886  4294.453507  4.294454
+17    MRK    82.279999   51.201841  4212.887439  4.212887
+18   ABBV   118.660004   34.816461  4131.321370  4.131321
+19      C    67.279999   60.192559  4049.755302  4.049755
+20    NKE   172.029999   21.170290  3641.924959  3.641925
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{total\PYZus{}percent} \PY{o}{=} \PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Weight}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The total weight of our portfolio is }\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n+nb}{round}\PY{p}{(}\PY{n}{total\PYZus{}weight}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The total weight of our portfolio is \%100
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{total\PYZus{}value} \PY{o}{=} \PY{n}{FinalPortfolio}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The total value of our portfolio is \PYZdl{}}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n+nb}{round}\PY{p}{(}\PY{n}{total\PYZus{}value}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The total value of our portfolio is \$100000.0
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Stocks} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{)}
+\PY{n}{Stocks}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ticker}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ticker}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{Stocks}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shares}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{portfolioc}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shares}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{Stocks}\PY{o}{.}\PY{n}{index} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{portfolioc}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{Stocks}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Ticker      Shares
+1     MON  820.233671
+2      PG   46.445362
+3      KO  118.677673
+4     LMT   17.721949
+5      SO   84.862322
+6     PEP   31.208709
+7      CL   63.618595
+8    SBUX   43.406002
+9     ABT   38.901543
+10     PM   50.418214
+11    NEE   52.048524
+12      T  182.165336
+13    BMY   78.464804
+14     GM   71.676889
+15   AMZN    1.222212
+16   BIIB   17.168886
+17    MRK   51.201841
+18   ABBV   34.816461
+19      C   60.192559
+20    NKE   21.170290
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Output a csv}
+\PY{n}{Stocks}\PY{o}{.}\PY{n}{to\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stocks\PYZus{}Group\PYZus{}18.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{contribution-declaration}{%
+\subsection{Contribution Declaration}\label{contribution-declaration}}
+
+The following team members made a meaningful contribution to this
+assignment:
+
+Daniel Kim, Kitty Cai, Andre Slavescu
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
