@@ -37,3 +37,7 @@ CFM group assignment
     - Avoid hardcoding
     - Use loops where appropriate
     - Why are the stocks picked those specific stocks?
+    
+# Lowest Beta vs. Highest Beta Example
+
+<img src="docs/CFM_101_Group_18_Assignment_Notebook/output_35_0.png" width="700px">
